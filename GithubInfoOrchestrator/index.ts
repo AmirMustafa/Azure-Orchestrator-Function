@@ -1,7 +1,19 @@
 ﻿import * as df from "durable-functions";
 
 const orchestrator = df.orchestrator(function* (context) {
-  // WRITE CODE
+  const userId: string = yield context.df.callActivity(
+    "GetRepositoryDetailsByName",
+    context.bindingData.input
+  );
+
+  // Chaining response from first actitity trigger to next actitity
+  context.bindingData.input = userId;
+
+  const userInfo = yield context.df.callActivity(
+    "GetUserDetailsById",
+    context.bindingData.input
+  );
+  return userInfo;
 });
 
 export default orchestrator;
