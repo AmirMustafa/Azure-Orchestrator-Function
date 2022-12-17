@@ -6,7 +6,7 @@ const activityFunction: AzureFunction = async function (
 ): Promise<any> {
   const octokit = new Octokit();
 
-  const apiPath = `/users/${context.bindingData.name?.toString()}`;
+  const apiPath = `/users/${context.bindingData.userId?.toString()}`;
   const searchResult = await octokit.request(apiPath);
   const userData = <JSON>searchResult.data;
   return userData;
