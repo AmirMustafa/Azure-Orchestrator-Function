@@ -4,19 +4,21 @@ import { Octokit } from "@octokit/core";
 const activityFunction: AzureFunction = async function (
   context: Context
 ): Promise<string> {
-  if (
-    context.bindingData.raiseException &&
-    context.bindingData.raiseException === true
-  ) {
-    context.log("Error enforced by caller");
-    throw {
-      name: "ForcedException",
-      message: "Caller enforced exception",
-      toString: function () {
-        return this.name + ": " + this.message;
-      },
-    };
-  }
+  // if (
+  //   context.bindingData.raiseException &&
+  //   context.bindingData.raiseException === true
+  // ) {
+  //   context.log("Error enforced by caller");
+  //   throw {
+  //     name: "ForcedException",
+  //     message: "Caller enforced exception",
+  //     toString: function () {
+  //       return this.name + ": " + this.message;
+  //     },
+  //   };
+  // }
+
+  await sleep(7000);
 
   const octokit = new Octokit();
 
@@ -41,5 +43,9 @@ const activityFunction: AzureFunction = async function (
   context.bindingData.repositoryName = context.bindingData.repositoryName;
   return exactMatch.owner.login;
 };
+
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export default activityFunction;

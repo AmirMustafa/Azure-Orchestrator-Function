@@ -1,37 +1,42 @@
 ﻿import * as df from "durable-functions";
+import moment from "moment";
 
 const orchestrator = df.orchestrator(function* (context) {
-  const firstRetryIntervalInMilliseconds: number = 1000;
-  const maxNumberOfAttempts: number = 3;
-  const maxRetryIntervalInSeconds: number = 1000;
-  const retryTimeoutInMilliseconds: number = 7000;
+  const timeoutInMilliseconds: number = 3000;
+  const deadline = moment
+    .utc(context.df.currentUtcDateTime)
+    .add(timeoutInMilliseconds, "ms");
 
-  const retryConfig: df.RetryOptions = new df.RetryOptions(
-    firstRetryIntervalInMilliseconds,
-    maxNumberOfAttempts
+  const timeoutTask = context.df.createTimer(deadline.toDate());
+  const repositoryDetailsTask = context.df.callActivity(
+    "GetRepositoryDetailsByName",
+    context.bindingData.input
   );
-  retryConfig.maxRetryIntervalInMilliseconds = maxRetryIntervalInSeconds;
-  retryConfig.retryTimeoutInMilliseconds = retryTimeoutInMilliseconds;
 
-  // Testing purpose - making after first attempt
-  if (context.df.isReplaying === true) {
-    context.bindingData.input.raiseException = false;
+  // Race between Activity Trigger 1 and timeout
+  const winner = yield context.df.Task.any([
+    repositoryDetailsTask,
+    timeoutTask,
+  ]);
+
+  if (winner === repositoryDetailsTask) {
+    context.log("Repository information fetched before timeout");
+
+    timeoutTask.cancel();
+
+    const userId = repositoryDetailsTask.result;
+    context.bindingData.input.userId = userId;
+  } else {
+    context.log("Repository information call timed out !!");
+    throw new Error("Repository information fetched before timeout !!");
   }
 
-  const userId: string = yield context.df.callActivityWithRetry(
-    "GetRepositoryDetailsByName",
-    retryConfig,
-    context.bindingData.input
-  );
-
-  // Chaining response from first actitity trigger to next actitity
-  context.bindingData.input.userId = userId;
-
-  const userInfo = yield context.df.callActivityWithRetry(
+  // Activity Trigger 2
+  const userInfo = yield context.df.callActivity(
     "GetUserDetailsById",
-    retryConfig,
     context.bindingData.input
   );
+
   return userInfo;
 });
 
