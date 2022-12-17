@@ -11,10 +11,20 @@ const activityFunction: AzureFunction = async function (
     q: query,
   });
 
+  context.log(
+    "respository name ===> ",
+    context.bindingData.repositoryName,
+    context.bindingData
+  );
+
+  context.bindingData.repositoryName = context.bindingData.repositoryName;
+  context.log("search data ==>", searhResult);
+
   const exactMatch = searhResult.data.items.find(
     (item) => item.name === context.bindingData.repositoryName.toString()
   );
-
+  context.log("exactMatch ==>", exactMatch);
+  context.bindingData.repositoryName = context.bindingData.repositoryName;
   return exactMatch.owner.login;
 };
 

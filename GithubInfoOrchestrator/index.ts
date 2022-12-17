@@ -9,6 +9,8 @@ const orchestrator = df.orchestrator(function* (context) {
   // Chaining response from first actitity trigger to next actitity
   context.bindingData.input = userId;
 
+  context.log("OE ==>", userId, context.bindingData.input);
+
   const userInfo = yield context.df.callActivity(
     "GetUserDetailsById",
     context.bindingData.input
