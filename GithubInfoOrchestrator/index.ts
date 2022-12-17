@@ -22,8 +22,6 @@ const orchestrator = df.orchestrator(function* (context) {
   // Chaining response from first actitity trigger to next actitity
   context.bindingData.input.userId = userId;
 
-  // context.log("OE ==>", userId, context.bindingData.input);
-
   const userInfo = yield context.df.callActivityWithRetry(
     "GetUserDetailsById",
     retryConfig,
