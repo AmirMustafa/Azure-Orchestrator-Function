@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "b07fd2bc-3825-4ff7-9c56-40e154376939",
+		"name": "Azure Functions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Orchestrator Engine / Durable Functions",
+			"item": [
+				{
+					"name": "HelloCity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7071/api/orchestrators/DurableFunctionsOrchestrator",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7071",
+							"path": [
+								"api",
+								"orchestrators",
+								"DurableFunctionsOrchestrator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GithubInfoOrchestrator - Plain",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"repositoryName\": \"Azure-Orchestrator-Function\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:7071/api/orchestrators/GithubInfoOrchestrator",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7071",
+							"path": [
+								"api",
+								"orchestrators",
+								"GithubInfoOrchestrator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GithubInfoOrchestrator - Retry",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"repositoryName\": \"Azure-Orchestrator-Function\",\n    \"raiseException\": \"true\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:7071/api/orchestrators/GithubInfoOrchestrator",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7071",
+							"path": [
+								"api",
+								"orchestrators",
+								"GithubInfoOrchestrator"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -18,7 +18,7 @@ const activityFunction: AzureFunction = async function (
   //   };
   // }
 
-  await sleep(7000);
+  // await sleep(7000);
 
   const octokit = new Octokit();
 
