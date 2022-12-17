@@ -13,6 +13,11 @@ const orchestrator = df.orchestrator(function* (context) {
   retryConfig.maxRetryIntervalInMilliseconds = maxRetryIntervalInSeconds;
   retryConfig.retryTimeoutInMilliseconds = retryTimeoutInMilliseconds;
 
+  // Testing purpose - making after first attempt
+  if (context.df.isReplaying === true) {
+    context.bindingData.input.raiseException = false;
+  }
+
   const userId: string = yield context.df.callActivityWithRetry(
     "GetRepositoryDetailsByName",
     retryConfig,
